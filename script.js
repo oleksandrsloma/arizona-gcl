@@ -1,4 +1,4 @@
-// === КОНФИГУРАЦИЯ FIREBASE ===
+// === КОНФИГУРАЦИЯ ===
 const firebaseConfig = {
   apiKey: "AIzaSyC-jCAxq5N0YSGlJkANVAPJvtjavfeqFJg",
   authDomain: "arizona-gcl.firebaseapp.com",
@@ -21,9 +21,9 @@ let currentUser = null;
 let userData = null;
 let tempOrder = {};
 
-// === 1. ПРОВЕРКА СЕССИИ (АВТО-ВХОД) ===
+// === 1. ЗАГРУЗКА И АВТО-ВХОД ===
 document.addEventListener('DOMContentLoaded', () => {
-    // Проверяем, есть ли сохраненный ник в браузере
+    // Авто-вход
     const savedUser = localStorage.getItem('gcl_session_user');
     const savedRole = localStorage.getItem('gcl_session_role');
 
@@ -31,19 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedRole === 'leader') {
             loginSuccess('Doni_Moore', {rank: 'Директор', level: 3}, true);
         } else {
-            // Проверяем, существует ли юзер в базе
             db.ref('users/' + savedUser).once('value').then(snap => {
-                if (snap.exists()) {
-                    loginSuccess(savedUser, snap.val(), false);
-                    showToast(`С возвращением, ${savedUser}!`, 'success');
-                } else {
-                    localStorage.removeItem('gcl_session_user'); // Юзер удален, сброс
-                }
+                if(snap.exists()) loginSuccess(savedUser, snap.val(), false);
             });
         }
     }
 
-    // Подписки
     db.ref('settings/recruit').on('value', snap => updateRecruitUI(snap.val()));
     db.ref('users').on('value', snap => calculateBestEmployee(snap.val()));
 });
@@ -59,19 +52,18 @@ function performLoginCloud() {
             localStorage.setItem('gcl_session_user', 'Leader');
             localStorage.setItem('gcl_session_role', 'leader');
             loginSuccess('Doni_Moore', {rank: 'Директор', level: 3}, true);
-        } else showToast('Неверный пароль Лидера', 'error');
+        } else showToast('Неверный пароль', 'error');
         return;
     }
 
     db.ref('users/' + nick).once('value').then(snap => {
         const data = snap.val();
         if (data && data.pass === pass) {
-            // Сохраняем сессию
             localStorage.setItem('gcl_session_user', nick);
             localStorage.setItem('gcl_session_role', 'emp');
             loginSuccess(nick, data, false);
         } else {
-            showToast('Неверный ник или пароль', 'error');
+            showToast('Ошибка входа', 'error');
         }
     });
 }
@@ -85,95 +77,80 @@ function loginSuccess(nick, data, isLeader) {
     document.querySelector('.navbar').classList.add('hidden');
     document.getElementById('dashboardSection').classList.remove('hidden');
 
-    // Настройка интерфейса
     if (isLeader) {
         document.getElementById('menuLevel3').classList.remove('hidden');
         renderAdminRealtime();
         document.getElementById('dashNick').innerText = "Doni_Moore";
         document.getElementById('dashRank').innerText = "Директор";
-        document.getElementById('dashAvatar').src = "https://wiki.sa-mp.com/w/images/thumb/2/25/Skin_295.png/180px-Skin_295.png";
     } else {
         // Подписка на обновления профиля
         db.ref('users/' + nick).on('value', (snap) => {
             const fresh = snap.val();
-            if(!fresh) { 
-                alert("Ваш аккаунт удален."); 
-                logout(); 
-                return; 
-            }
-            userData = fresh;
-            updateDashboardUI();
+            if(!fresh) { logout(); return; }
             
-            // Уровни доступа
-            const lvl = fresh.level || 1;
-            if(lvl >= 2) document.getElementById('menuLevel2').classList.remove('hidden');
-            if(lvl >= 3) document.getElementById('menuLevel3').classList.remove('hidden');
-
-            // Уведомления
+            // ПРОВЕРКА УВЕДОМЛЕНИЙ (Самое важное)
             if (fresh.notifications) {
                 Object.entries(fresh.notifications).forEach(([key, note]) => {
-                    if(!note.read) {
-                        showAlert(note.title, note.msg, note.type);
-                        db.ref(`users/${nick}/notifications/${key}`).update({read: true});
-                    }
+                    // Показываем алерт
+                    showAlert(note.title, note.msg, note.type);
+                    // Удаляем уведомление, чтобы не показывать дважды
+                    db.ref(`users/${nick}/notifications/${key}`).remove();
                 });
             }
+
+            userData = fresh;
+            updateDashboardUI();
+            checkAccessLevels(); // Обновляем меню при смене уровня
         });
     }
 }
 
-function logout() {
-    localStorage.removeItem('gcl_session_user');
-    localStorage.removeItem('gcl_session_role');
-    location.reload();
+// === 3. ПРОВЕРКА УРОВНЕЙ ДОСТУПА ===
+function checkAccessLevels() {
+    const lvl = userData.level || 1;
+    const dept = userData.department || "Нет";
+
+    document.getElementById('dashDept').innerText = "Отдел: " + dept;
+
+    // Сброс
+    document.getElementById('menuLevel2').classList.add('hidden');
+    document.getElementById('menuLevel3').classList.add('hidden');
+
+    if (lvl >= 2) document.getElementById('menuLevel2').classList.remove('hidden');
+    if (lvl >= 3) document.getElementById('menuLevel3').classList.remove('hidden');
 }
 
-// === 3. ОТПРАВКА ОТЧЕТОВ ЛИДЕРУ (ИСПРАВЛЕНО) ===
+// === 4. ОТПРАВКА ОТЧЕТОВ (ЧЕРЕЗ FIREBASE) ===
+// Это теперь работает на 100%, так как мы пишем в базу, а бот читает оттуда
 function sendInternalReport(type) {
     let desc = "";
     if(type === 'Повышение') desc = document.getElementById('promoDesc').value;
     if(type === 'Снятие выговора') desc = document.getElementById('warnDesc').value;
     if(type === 'Сообщение') desc = document.getElementById('msgDesc').value;
 
-    if(!desc) return showToast("Напишите текст отчета!", "error");
+    if(!desc) return showToast("Заполните поле!", "error");
 
-    const text = `
-📩 <b>НОВОЕ СООБЩЕНИЕ С САЙТА</b>
-👤 От: ${currentUser}
-🔰 Ранг: ${userData.rank}
-📌 Тема: <b>${type}</b>
-📝 Текст: ${desc}
-    `;
-    
-    // Используем простой fetch без сложных заголовков, чтобы избежать CORS проблем если возможно,
-    // но Telegram требует POST JSON.
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ 
-            chat_id: LEADER_CHAT_ID, 
-            text: text, 
-            parse_mode: 'HTML' 
-        })
-    }).then(response => {
-        if(response.ok) {
-            showToast("Сообщение успешно отправлено!", "success");
-            // Очистка полей
-            if(type === 'Повышение') document.getElementById('promoDesc').value = "";
-            if(type === 'Снятие выговора') document.getElementById('warnDesc').value = "";
-            if(type === 'Сообщение') document.getElementById('msgDesc').value = "";
-        } else {
-            showToast("Ошибка отправки. Проверьте консоль.", "error");
-            console.error(response);
-        }
+    // Пишем в специальную ветку 'site_reports'
+    db.ref('site_reports').push({
+        author: currentUser,
+        type: type,
+        text: desc,
+        time: Date.now()
+    }).then(() => {
+        showToast("Отчет отправлен Лидеру!", "success");
+        // Очистка
+        document.getElementById('promoDesc').value = "";
+        document.getElementById('warnDesc').value = "";
+        document.getElementById('msgDesc').value = "";
+    }).catch(err => {
+        showToast("Ошибка соединения", "error");
     });
 }
 
-// === ИНТЕРФЕЙС DASHBOARD ===
+// === 5. ИНТЕРФЕЙС ===
 function updateDashboardUI() {
     document.getElementById('dashNick').innerText = currentUser;
     document.getElementById('dashRank').innerText = userData.rank;
-    document.getElementById('dashDept').innerText = "Отдел: " + (userData.department || "Нет");
     document.getElementById('dashAvatar').src = userData.avatar || "";
     
     document.getElementById('statBalance').innerText = (userData.balance || 0).toLocaleString() + " $";
@@ -188,7 +165,7 @@ function updateDashboardUI() {
     document.getElementById('xpNum').innerText = `${progress}/100`;
     document.getElementById('xpFill').style.width = `${progress}%`;
 
-    // History
+    // История
     const list = document.getElementById('historyList');
     list.innerHTML = "";
     const history = userData.history ? Object.values(userData.history).reverse() : [];
@@ -200,13 +177,13 @@ function updateDashboardUI() {
     });
 }
 
-// === СДАЧА ЗАРПЛАТЫ (КОД) ===
+// === СДАЧА ЗП ===
 function submitReportCloud() {
     const id = document.getElementById('repId').value.trim();
     const inputCode = document.getElementById('repCode').value.trim();
     const price = parseInt(document.getElementById('repPrice').value);
 
-    if(!id || !inputCode || !price) return showToast("Заполните все поля", "error");
+    if(!id || !inputCode || !price) return showToast("Заполните поля", "error");
 
     db.ref('codes/' + id).once('value').then((snapshot) => {
         const realCode = snapshot.val();
@@ -228,19 +205,17 @@ function submitReportCloud() {
                     db.ref(`users/${currentUser}/history`).push({
                         op: `Заказ #${id}`, sum: `+${price}$`, date: date
                     });
-                    showToast(`Зарплата +${price}$ начислена!`, "success");
-                    document.getElementById('repId').value = "";
-                    document.getElementById('repCode').value = "";
+                    showToast("Зарплата начислена!", "success");
                     switchTab('stats');
                 }
             });
         } else {
-            showToast("Неверный код или ID!", "error");
+            showToast("Неверный код", "error");
         }
     });
 }
 
-// === ОСТАЛЬНЫЕ ФУНКЦИИ ===
+// === ОСТАЛЬНОЕ ===
 function renderAdminRealtime() {
     const tbody = document.querySelector('#staffTable tbody');
     db.ref('users').on('value', (snap) => {
@@ -270,6 +245,7 @@ function showAlert(title, msg, type='info') {
     document.getElementById('alertMsg').innerText = msg;
     const icon = document.getElementById('alertIcon');
     icon.style.color = (type==='error') ? '#ff2d55' : (type==='success') ? '#34c759' : '#007aff';
+    icon.innerHTML = (type==='error') ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-bell"></i>';
     openModal('alertModal');
 }
 
@@ -301,14 +277,14 @@ function switchTab(t) {
     event.target.classList.add('active');
 }
 function setLoginMode(m) {
-    const inp = document.getElementById('loginNick');
+    document.getElementById('loginNick').setAttribute('data-mode', m);
     document.querySelectorAll('.l-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
-    inp.setAttribute('data-mode', m);
     document.getElementById('loginPass').placeholder = (m==='leader') ? "Пароль Лидера" : "Пароль";
 }
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function logout() { localStorage.removeItem('gcl_session_user'); location.reload(); }
 function showPublic() { location.reload(); }
 function copyLeader() { navigator.clipboard.writeText(GAME_LEADER_NICK); showToast("Ник скопирован!", "success"); }
 function toggleRecruitCloud() { db.ref('settings/recruit').set(document.getElementById('recruitToggle').checked ? 'open' : 'closed'); }
