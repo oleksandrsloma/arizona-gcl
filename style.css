@@ -232,4 +232,22 @@ h2 { font-size: 2rem; margin-bottom: 30px; font-weight: 700; }
     .dashboard-layout { grid-template-columns: 1fr; padding-left: 15px; padding-right: 15px; }
     .sidebar { display: none; } /* Надо делать бургер-меню, но пока скроем для простоты */
     h1 { font-size: 3rem; }
+
+/* Fix для кнопок в разделе заявлений */
+.forms-grid .btn-primary {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.forms-grid .btn-primary:hover {
+    background: #2563eb;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
 }
