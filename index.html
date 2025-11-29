@@ -13,23 +13,23 @@
     <div id="toast-container"></div>
 
     <div id="alertModal" class="modal">
-        <div class="modal-card glass-modal alert-card">
+        <div class="modal-content glass-modal alert-card">
             <div class="alert-icon" id="alertIcon"><i class="fa-solid fa-bell"></i></div>
-            <h2 id="alertTitle">Уведомление</h2>
-            <p id="alertMsg">Текст сообщения...</p>
+            <h2 id="alertTitle" style="margin-bottom:10px">Уведомление</h2>
+            <p id="alertMsg" style="color:#aaa; margin-bottom:20px">Текст сообщения...</p>
             <button class="btn-primary full" onclick="closeModal('alertModal')">Принято</button>
         </div>
     </div>
 
-    <nav class="navbar glass">
-        <div class="container nav-container">
+    <nav class="navbar">
+        <div class="nav-container">
             <a href="#" class="logo">
                 <i class="fa-solid fa-layer-group"></i> 
                 <span>GCL <b class="highlight">SYSTEM</b></span>
             </a>
             <ul class="nav-links">
-                <li><a href="#" onclick="showPublic()">Главная</a></li>
-                <li><button class="btn-login glow-effect" onclick="openModal('loginModal')">
+                <li><a href="#" onclick="showPublic()">ГЛАВНАЯ</a></li>
+                <li><button class="btn-login" onclick="openModal('loginModal')">
                     <i class="fa-solid fa-fingerprint"></i> TERMINAL
                 </button></li>
             </ul>
@@ -39,111 +39,138 @@
     <main id="publicSection">
         <section class="hero">
             <div class="hero-bg"></div>
-            <div class="hero-content container">
+            <div class="hero-content">
                 <div class="status-indicator">
-                    <span class="status-dot"></span> Система онлайн
+                    <span class="status-dot"></span> <span id="recruitText">СИСТЕМА ОНЛАЙН</span>
                 </div>
                 <h1>ЦЕНТР <span class="gradient-text">ЛИЦЕНЗИРОВАНИЯ</span></h1>
-                <p>Единый государственный портал оформления документов.</p>
+                <p>Единый государственный портал оформления документов и управления персоналом.</p>
                 
                 <div class="hero-grid">
-                    <button class="action-card" onclick="openModal('buyLicenseModal')">
+                    <div class="action-card" onclick="openModal('buyLicenseModal')">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span>Купить лицензию</span>
-                    </button>
-                    <button class="action-card" onclick="openModal('appModal')">
+                    </div>
+                    <div class="action-card" onclick="alert('Раздел заявлений доступен на форуме!')">
                         <i class="fa-solid fa-file-signature"></i>
                         <span>Электронное заявление</span>
-                    </button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <section id="dashboardSection" class="dashboard-layout hidden">
-        <aside class="sidebar glass">
+        <aside class="sidebar">
             <div class="user-info">
                 <div class="avatar-ring">
                     <img src="" id="dashAvatar">
                 </div>
-                <h3 id="dashNick">User</h3>
-                <span id="dashRank">Rank</span>
-                <span id="dashDept" class="dept-badge">Отдел: Нет</span>
+                <h3 id="dashNick">Имя Фамилия</h3>
+                <span id="dashRank" style="color:var(--primary); font-weight:bold; font-size:0.9rem;">Должность</span>
+                <br>
+                <div class="dept-tag" id="dashDept">Отдел: Нет</div>
             </div>
 
-            <nav class="side-menu">
-                <div class="menu-cat">ОСНОВНОЕ</div>
-                <button class="menu-item active" onclick="switchTab('stats')"><i class="fa-solid fa-chart-pie"></i> Сводка</button>
-                <button class="menu-item" onclick="switchTab('report')"><i class="fa-solid fa-sack-dollar"></i> Зарплата (Код)</button>
-                <button class="menu-item" onclick="switchTab('forms')"><i class="fa-solid fa-file-pen"></i> Заявления</button>
-                
+            <nav class="side-nav">
+                <div class="nav-category">ГЛАВНОЕ</div>
+                <button class="menu-item active" onclick="switchTab('stats')">
+                    <i class="fa-solid fa-chart-pie"></i> Сводка
+                </button>
+                <button class="menu-item" onclick="switchTab('report')">
+                    <i class="fa-solid fa-qrcode"></i> Ввод Кода (ЗП)
+                </button>
+                <button class="menu-item" onclick="switchTab('forms')">
+                    <i class="fa-solid fa-file-pen"></i> Заявления
+                </button>
+
                 <div id="menuLevel2" class="hidden">
-                    <div class="menu-cat">РУКОВОДСТВО</div>
-                    <button class="menu-item" onclick="switchTab('dept_manage')"><i class="fa-solid fa-building-user"></i> Мой Отдел</button>
+                    <div class="nav-category">ОТДЕЛ</div>
+                    <button class="menu-item" onclick="switchTab('dept_manage')">
+                        <i class="fa-solid fa-users-viewfinder"></i> Управление
+                    </button>
                 </div>
 
                 <div id="menuLevel3" class="hidden">
-                    <div class="menu-cat">ADMINISTRATION</div>
-                    <button class="menu-item" onclick="switchTab('admin')"><i class="fa-solid fa-user-shield"></i> Управление</button>
+                    <div class="nav-category">АДМИНИСТРАТОР</div>
+                    <button class="menu-item" onclick="switchTab('admin')">
+                        <i class="fa-solid fa-shield-cat"></i> Панель Лидера
+                    </button>
                 </div>
 
-                <div class="menu-cat">СИСТЕМА</div>
-                <button class="menu-item" onclick="switchTab('settings')"><i class="fa-solid fa-gear"></i> Настройки</button>
-                <button class="menu-item logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выход</button>
+                <div class="nav-category">СИСТЕМА</div>
+                <button class="menu-item" onclick="switchTab('settings')">
+                    <i class="fa-solid fa-gear"></i> Настройки
+                </button>
+                <button class="menu-item logout" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Выйти
+                </button>
             </nav>
         </aside>
 
         <div class="content-area">
             
-            <div id="tab-stats" class="tab-pane">
-                <div class="stats-header">
-                    <h2>Добро пожаловать</h2>
-                    <div class="stats-row">
-                        <div class="stat-card">
-                            <i class="fa-solid fa-wallet icon-bg"></i>
-                            <h3>Баланс</h3>
-                            <span id="statBalance">0 $</span>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fa-solid fa-user-check icon-bg"></i>
-                            <h3>Выдано</h3>
-                            <span id="statCount">0</span>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fa-solid fa-star icon-bg"></i>
-                            <h3>Опыт (XP)</h3>
-                            <span id="statXP">0</span>
-                        </div>
+            <div id="tab-stats" class="content-tab">
+                <div style="margin-bottom: 30px;">
+                    <h2>Обзор профиля</h2>
+                    <p style="color:var(--text-sec)">Статистика вашей работы за неделю.</p>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-wallet icon-bg"></i>
+                        <h3>БАЛАНС</h3>
+                        <span id="statBalance">0 $</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-user-check icon-bg"></i>
+                        <h3>ВЫДАНО</h3>
+                        <span id="statCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-star icon-bg"></i>
+                        <h3>ОПЫТ (XP)</h3>
+                        <span id="statXP">0</span>
                     </div>
                 </div>
-            </div>
-
-            <div id="tab-report" class="tab-pane hidden">
-                <h2>Получение зарплаты</h2>
-                <div class="code-panel glass">
-                    <i class="fa-solid fa-shield-cat"></i>
-                    <p>Введите секретный код, полученный от бота в Telegram.</p>
-                    <input type="text" id="repId" placeholder="ID Заказа" class="terminal-input">
-                    <input type="text" id="repCode" placeholder="CODE (A-123)" class="terminal-input">
-                    <input type="number" id="repPrice" placeholder="Сумма" class="terminal-input">
-                    <button class="btn-primary full" onclick="submitReportCloud()">Активировать</button>
+                
+                <h3 style="margin-top: 40px; margin-bottom: 20px; color:white;">История операций</h3>
+                <div class="glass" style="padding: 20px; border-radius: 12px;">
+                    <table class="staff-table">
+                        <thead><tr><th>Действие</th><th>Сумма</th><th>Дата</th></tr></thead>
+                        <tbody id="historyList"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <div id="tab-forms" class="tab-pane hidden">
+            <div id="tab-report" class="content-tab hidden">
+                <h2>Получение зарплаты</h2>
+                <div class="code-panel">
+                    <i class="fa-solid fa-shield-cat" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <p style="color:var(--text-sec); margin-bottom: 20px;">Введите секретный код, полученный от бота в Telegram.</p>
+                    
+                    <input type="text" id="repId" placeholder="ID Заказа" class="terminal-input">
+                    <input type="text" id="repCode" placeholder="CODE (A-123)" class="terminal-input">
+                    <input type="number" id="repPrice" placeholder="Сумма ($)" class="terminal-input">
+                    
+                    <button class="btn-primary full" onclick="submitReportCloud()">АКТИВИРОВАТЬ КОД</button>
+                </div>
+            </div>
+
+            <div id="tab-forms" class="content-tab hidden">
                 <h2>Центр Заявлений</h2>
                 <div class="forms-grid">
-                    <div class="form-card glass">
+                    <div class="form-card">
                         <h3><i class="fa-solid fa-arrow-up-right-dots"></i> На повышение</h3>
                         <textarea id="promoDesc" placeholder="Что сделали? (Ссылки на imgur)"></textarea>
                         <button class="btn-primary full" onclick="sendInternalReport('Повышение')">Отправить отчет</button>
                     </div>
-                    <div class="form-card glass">
+                    <div class="form-card">
                         <h3><i class="fa-solid fa-eraser"></i> Снятие выговора</h3>
                         <textarea id="warnDesc" placeholder="Доказательства работы"></textarea>
                         <button class="btn-primary full" onclick="sendInternalReport('Снятие выговора')">Отправить</button>
                     </div>
-                    <div class="form-card glass">
+                    <div class="form-card">
                         <h3><i class="fa-solid fa-envelope"></i> Сообщение Лидеру</h3>
                         <textarea id="msgDesc" placeholder="Вопрос или предложение"></textarea>
                         <button class="btn-primary full" onclick="sendInternalReport('Сообщение')">Написать</button>
@@ -151,40 +178,33 @@
                 </div>
             </div>
 
-            <div id="tab-settings" class="tab-pane hidden">
+            <div id="tab-settings" class="content-tab hidden">
                 <h2>Личные настройки</h2>
-                <div class="settings-box glass">
-                    <div class="inp-group">
-                        <label>Ссылка на аватарку (Imgur)</label>
-                        <input type="text" id="setAvatar" class="terminal-input">
-                    </div>
-                    <div class="inp-group">
-                        <label>Сменить пароль</label>
-                        <input type="password" id="setPass" class="terminal-input" placeholder="Новый пароль">
-                    </div>
-                    <button class="btn-success" onclick="saveSettings()">Сохранить изменения</button>
+                <div class="code-panel" style="text-align: left;">
+                    <label style="color:var(--text-sec); display:block; margin-bottom:5px;">Ссылка на аватарку (Imgur)</label>
+                    <input type="text" id="setAvatar" class="terminal-input" placeholder="https://i.imgur.com/...">
+                    
+                    <label style="color:var(--text-sec); display:block; margin-bottom:5px; margin-top:15px;">Сменить пароль</label>
+                    <input type="password" id="setPass" class="terminal-input" placeholder="Новый пароль">
+                    
+                    <button class="btn-success full" style="margin-top: 20px;" onclick="saveSettings()">СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
                 </div>
             </div>
 
-            <div id="tab-dept_manage" class="tab-pane hidden">
-                <h2>Управление Отделом</h2>
-                <div class="dept-panel glass">
-                    <h3>📢 Распоряжения отдела</h3>
-                    <textarea id="deptOrder" placeholder="Введите задачу для сотрудников отдела на неделю..."></textarea>
-                    <button class="btn-primary" onclick="alert('Распоряжение опубликовано!')">Опубликовать</button>
-                </div>
-            </div>
-
-            <div id="tab-admin" class="tab-pane hidden">
+            <div id="tab-admin" class="content-tab hidden">
                 <h2>Терминал Лидера</h2>
                 <div class="admin-dashboard">
-                    <div class="admin-controls">
-                        <h3>Управление статусом</h3>
-                        <button class="btn-primary" onclick="toggleRecruitCloud()">Переключить Набор</button>
+                    <div class="admin-controls glass" style="padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3><i class="fa-solid fa-bullhorn"></i> Управление статусом</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                            <span>Статус набора в организацию</span>
+                            <button class="btn-primary" onclick="toggleRecruitCloud()">ПЕРЕКЛЮЧИТЬ</button>
+                        </div>
                     </div>
-                    <div class="staff-list glass">
-                        <h3>База данных сотрудников</h3>
-                        <table class="data-table" id="staffTable">
+                    
+                    <h3 style="margin-bottom: 20px;">База данных сотрудников</h3>
+                    <div class="glass" style="padding: 0; border-radius: 12px; overflow: hidden;">
+                        <table class="staff-table" id="staffTable">
                             <thead><tr><th>Ник</th><th>Ранг</th><th>Уровень</th><th>Отдел</th></tr></thead>
                             <tbody></tbody>
                         </table>
@@ -196,14 +216,16 @@
     </section>
 
     <div id="loginModal" class="modal">
-        <div class="modal-card terminal-modal">
-            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
+        <div class="modal-content terminal-modal">
+            <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
             <div class="term-header">> ACCESS_CONTROL_SYSTEM_V4</div>
             <div class="term-body">
                 <input type="text" id="loginNick" placeholder="IDENTIFIER (Nick_Name)">
                 <input type="password" id="loginPass" placeholder="PASSWORD">
                 <div class="login-options">
-                    <label><input type="checkbox" id="isLeaderLogin"> Режим администратора</label>
+                    <label style="color: var(--text-sec); cursor:pointer;">
+                        <input type="checkbox" id="isLeaderLogin"> Режим администратора
+                    </label>
                 </div>
                 <button class="term-btn" onclick="performLoginCloud()">> CONNECT</button>
             </div>
@@ -211,25 +233,31 @@
     </div>
 
     <div id="buyLicenseModal" class="modal">
-        <div class="modal-card glass-modal">
-            <span class="close-modal" onclick="closeModal('buyLicenseModal')">&times;</span>
+        <div class="modal-content glass-modal">
+            <span class="close-btn" onclick="closeModal('buyLicenseModal')">&times;</span>
             <div id="step1">
-                <h2>Оформление</h2>
-                <input type="text" id="buyerNick" class="terminal-input" placeholder="Ваш Ник">
-                <select id="buyerLic" class="terminal-input">
+                <h2 style="margin-bottom: 20px;">Оформление</h2>
+                <input type="text" id="buyerNick" class="modern-input" placeholder="Ваш Ник">
+                <select id="buyerLic" class="modern-input">
                     <option value="5000">Водительские (5k)</option>
                     <option value="50000">Оружие (50k)</option>
+                    <option value="150000">Раскопки (150k)</option>
                 </select>
                 <button class="btn-primary full" onclick="goToPayment()">Далее</button>
             </div>
             <div id="step2" class="hidden center-text">
                 <h3>Перевод средств</h3>
-                <div class="pay-target" onclick="navigator.clipboard.writeText('Doni_Moore')">Doni_Moore</div>
-                <div class="pay-amount" id="displayPrice">0 $</div>
+                <div class="action-card" style="width:100%; margin: 20px 0; padding: 20px;" onclick="copyLeader()">
+                    <span style="color:var(--text-sec)">Счет получателя:</span>
+                    <span style="font-size:1.5rem; color:var(--primary)">Doni_Moore</span>
+                </div>
+                <div class="pay-amount" id="displayPrice" style="font-size: 2rem; font-weight: bold; margin-bottom: 20px;">0 $</div>
                 <button class="btn-success full" onclick="finishOrder()">Я оплатил</button>
             </div>
              <div id="step3" class="hidden center-text">
+                <i class="fa-solid fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 20px;"></i>
                 <h2>Заявка создана!</h2>
+                <p style="color:var(--text-sec)">Ожидайте подтверждения Лидера.</p>
             </div>
         </div>
     </div>
