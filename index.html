@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Центр Лицензирования | Arizona Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Licensing Center</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPublic()">Главная</a></li>
+                <li><a href="#resources">База знаний</a></li>
+                <li><button class="btn-login" onclick="openModal('loginModal')"><i class="fa-regular fa-user"></i> Вход для сотрудников</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="publicSection">
+        
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content container">
+                <span class="server-tag">ARIZONA STATE</span>
+                <h1>Центр Лицензирования</h1>
+                <p>Оформление лицензий онлайн, трудоустройство и карьерный рост.</p>
+                
+                <div id="recruitBadge" class="status-badge closed">
+                    <i class="fa-solid fa-lock"></i> Набор закрыт
+                </div>
+
+                <div class="hero-btns">
+                    <button class="btn btn-primary pulse-anim" onclick="openModal('buyLicenseModal')">⚡ Купить лицензию</button>
+                    <div class="blacklist-check">
+                        <input type="text" id="blCheckInput" placeholder="Проверить на ЧС (Ник)">
+                        <button onclick="checkBlacklistPublic()"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="news-grid">
+                <div class="news-card main-news">
+                    <div class="news-img" style="background-image: url('https://i.ytimg.com/vi/bX4J-tq4gCc/maxresdefault.jpg');"></div>
+                    <div class="news-text">
+                        <span class="date">Сегодня</span>
+                        <h3>Новая система защиты</h3>
+                        <p>Введена система секретных кодов для выдачи лицензий. Мошенничество невозможно.</p>
+                    </div>
+                </div>
+                <div class="best-employee-card">
+                    <div class="crown"><i class="fa-solid fa-crown"></i></div>
+                    <h3>Сотрудник недели</h3>
+                    <img src="" id="bestAvatar" alt="Loading...">
+                    <h4 id="bestNick">Никого...</h4>
+                    <p>Выдал <span id="bestCount">0</span> лицензий</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Прайс-лист услуг</h2>
+                <div class="price-list">
+                    <div class="price-item">
+                        <div class="p-icon"><i class="fa-solid fa-car"></i></div>
+                        <div class="p-info"><h4>Водительские права</h4></div>
+                        <div class="p-cost">5,000 $</div>
+                    </div>
+                    <div class="price-item">
+                        <div class="p-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                        <div class="p-info"><h4>Мото-транспорт</h4></div>
+                        <div class="p-cost">10,000 $</div>
+                    </div>
+                    <div class="price-item">
+                        <div class="p-icon"><i class="fa-solid fa-gun"></i></div>
+                        <div class="p-info"><h4>Лицензия на оружие</h4></div>
+                        <div class="p-cost">50,000 $</div>
+                    </div>
+                     <div class="price-item highlight">
+                        <div class="p-icon"><i class="fa-solid fa-gem"></i></div>
+                        <div class="p-info"><h4>Раскопки (Клад)</h4></div>
+                        <div class="p-cost">150,000 $</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resources" class="section">
+            <div class="container">
+                <h2 class="section-title">Полезные материалы</h2>
+                <div class="resources-grid">
+                    <div class="res-card">
+                        <h3><i class="fa-solid fa-scroll"></i> Лекция для стажеров</h3>
+                        <div class="code-box">
+                            /s Приветствую! Рабочий день с 9:00 до 20:00.<br>
+                            /s Спать на посту запрещено.<br>
+                            /s Слушайте старших по рангу.
+                        </div>
+                        <button class="btn-copy" onclick="copyText(this)">Копировать</button>
+                    </div>
+                    <div class="res-card">
+                        <h3><i class="fa-solid fa-keyboard"></i> AHK: Приветствие</h3>
+                        <div class="code-box dark">
+                            Numpad1::<br>
+                            SendMessage, 0x50,, 0x4190419,, A<br>
+                            SendInput, {F6}Здравствуйте, я сотрудник ГЦЛ.{Enter}<br>
+                            SendInput, {F6}/do Бейджик на груди.{Enter}<br>
+                            Return
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <section id="dashboardSection" class="dashboard-container hidden">
+        <aside class="sidebar">
+            <div class="profile-box">
+                <img src="" id="dashAvatar">
+                <h3 id="dashNick">User</h3>
+                <p id="dashRank">Rank</p>
+            </div>
+            <nav class="dash-menu">
+                <button class="menu-btn active" onclick="switchTab('stats')"><i class="fa-solid fa-chart-pie"></i> Статистика</button>
+                <button class="menu-btn" onclick="switchTab('report')"><i class="fa-solid fa-file-invoice-dollar"></i> Сдать отчет</button>
+                <button class="menu-btn hidden" id="adminBtn" onclick="switchTab('admin')"><i class="fa-solid fa-users-gear"></i> Админка</button>
+                <button class="menu-btn logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Выход</button>
+            </nav>
+        </aside>
+
+        <div class="dash-content">
+            <div id="tab-stats" class="tab-content">
+                <h2>Моя статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-wallet"></i>
+                        <div><h4>Баланс</h4><span id="statBalance" class="money">0 $</span></div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-check-double"></i>
+                        <div><h4>Выдано всего</h4><span id="statCount">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-report" class="tab-content hidden">
+                <h2>Сдача отчета</h2>
+                <div class="report-box">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: #d32f2f; margin-bottom: 20px;"></i>
+                    <p>Введите данные из Telegram (после одобрения Лидера).</p>
+                    
+                    <div class="form-group">
+                        <label>ID Заказа (из ТГ)</label>
+                        <input type="text" id="repId" placeholder="Например: 12345">
+                    </div>
+                    <div class="form-group">
+                        <label>🔐 Секретный Код</label>
+                        <input type="text" id="repCode" placeholder="Например: ABC-123">
+                    </div>
+                    <div class="form-group">
+                        <label>Сумма ($)</label>
+                        <input type="number" id="repPrice" placeholder="5000">
+                    </div>
+
+                    <button class="btn-primary full" onclick="submitReport()">✅ Получить зарплату</button>
+                </div>
+            </div>
+
+            <div id="tab-admin" class="tab-content hidden">
+                <h2>Панель Лидера</h2>
+                
+                <div class="admin-section">
+                    <h3>🛠 Управление набором</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="recruitToggle" onchange="toggleRecruit()">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="adminStatusText" style="font-weight:bold; margin-left: 10px;">Закрыто</span>
+                </div>
+
+                <div class="admin-section">
+                    <h3>👥 Сотрудники (База данных)</h3>
+                    <div class="table-responsive">
+                        <table class="admin-table" id="staffTable">
+                            <thead><tr><th>Ник</th><th>Ранг</th><th>Выдано</th><th>Баланс</th><th>Действия</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <button class="btn-danger" style="margin-top: 15px;" onclick="resetAllStats()">🔄 Обнулить неделю</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>⛔ Черный Список</h3>
+                    <div class="bl-form">
+                        <input type="text" id="blNick" placeholder="Nick_Name">
+                        <input type="text" id="blReason" placeholder="Причина">
+                        <button class="btn-primary" onclick="addToBlacklist()">Добавить</button>
+                    </div>
+                    <ul id="blList" class="bl-list"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Вход</h2>
+            <div class="login-tabs">
+                <button class="lt-btn active" onclick="setLoginMode('emp')">Сотрудник</button>
+                <button class="lt-btn" onclick="setLoginMode('leader')">Лидер</button>
+            </div>
+            <input type="text" id="loginInput" placeholder="Nick_Name" class="full-input">
+            <button class="btn btn-primary full" onclick="performLogin()">Войти</button>
+            <p class="hint" id="loginHint">Тест: <b>James_Cameron</b></p>
+        </div>
+    </div>
+
+    <div id="buyLicenseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('buyLicenseModal')">&times;</span>
+            
+            <div id="step1">
+                <h2>Оформление</h2>
+                <div class="form-group">
+                    <label>Ваш Ник</label>
+                    <input type="text" id="buyerNick" placeholder="Nick_Name" class="full-input">
+                </div>
+                <div class="form-group">
+                    <label>Лицензия</label>
+                    <select id="buyerLic" class="full-input">
+                        <option value="5000">Водительские (5k)</option>
+                        <option value="10000">Мото (10k)</option>
+                        <option value="50000">Оружие (50k)</option>
+                        <option value="25000">Полеты (25k)</option>
+                        <option value="150000">Раскопки (150k)</option>
+                    </select>
+                </div>
+                <button class="btn-primary full" onclick="goToPayment()">К оплате</button>
+            </div>
+
+            <div id="step2" class="hidden center-text">
+                <h2>Оплата</h2>
+                <p>Переведите сумму Лидеру:</p>
+                <h3 onclick="copyLeader()" style="cursor:pointer; color:var(--primary)">Doni_Moore <i class="fa-regular fa-copy"></i></h3>
+                <h1 id="displayPrice" style="color:green; margin: 15px 0;">0 $</h1>
+                <p class="alert-box">Сделайте скриншот перевода (F8)!</p>
+                <button class="btn-success full" onclick="finishOrder()">✅ Я оплатил</button>
+            </div>
+
+            <div id="step3" class="hidden center-text">
+                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <h2>Успешно!</h2>
+                <p>Заявка отправлена Лидеру.</p>
+                <p>Ожидайте выдачи.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
